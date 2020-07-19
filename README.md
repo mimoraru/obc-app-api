@@ -21,3 +21,8 @@ To run the test inside docker-composed run in the terminal:
 $ sudo docker-compose run app sh -c "python manage.py test"
 ``` 
 
+## Create the core app
+```bash
+$ sudo docker-compose run app sh -c "python manage.py startapp core"
+```
+
