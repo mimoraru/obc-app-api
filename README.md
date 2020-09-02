@@ -33,3 +33,8 @@ Everytime we make a change to the model we need to run the migrations again. It 
 ```bash
 $ sudo docker-compose run app sh -c "python manage.py makemigrations core"
 ```
+
+### Create the users app
+```bash
+$ sudo docker-compose run --rm app sh -c "python manage.py startapp user"
+```
