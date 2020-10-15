@@ -26,7 +26,9 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'testmihai@apidev.com',
             'password': 'testpass123',
-            'name': 'test name'
+            'first_name': 'test first_name',
+            'last_name': 'test last_name',
+            'company': 'test company'
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -40,7 +42,10 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'testmihai@apidev.com',
             'password': 'testpass123',
-            'name': 'Test'}
+            'first_name': 'Test',
+            'last_name': 'test last_name',
+            'company': 'test company'
+        }
         create_user(**payload)
 
         res = self.client.post(CREATE_USER_URL, payload)
@@ -52,7 +57,10 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'testmihai@apidev.com',
             'password': 'pw',
-            'name': 'Test'}
+            'first_name': 'Test',
+            'last_name': 'test last_name',
+            'company': 'test company'
+        }
         res = self.client.post(CREATE_USER_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -109,7 +117,9 @@ class PrivetUserApiTests(TestCase):
         self.user = create_user(
             email='testmhai@apidev.com',
             password='testpass123',
-            name='name'
+            first_name='first_name',
+            last_name='test last_name',
+            company='test company'
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
@@ -121,7 +131,9 @@ class PrivetUserApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, {
             'email': self.user.email,
-            'name': self.user.name
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
+            'company': self.user.company
         })
 
     def test_post_me_not_allowed(self):
@@ -135,10 +147,17 @@ class PrivetUserApiTests(TestCase):
 
     def test_update_user_profile(self):
         """test updating user profile for authenticated user"""
-        payload = {'name': 'new name', 'password': 'newtestpass123'}
+        payload = {
+            'first_name': 'new first_name',
+            'password': 'newtestpass123',
+            'last_name': 'new last_name',
+            'company': 'new company'
+            }
         res = self.client.patch(ME_URL, payload)
 
         self.user.refresh_from_db()
-        self.assertEqual(self.user.name, payload['name'])
+        self.assertEqual(self.user.first_name, payload['first_name'])
+        self.assertEqual(self.user.last_name, payload['last_name'])
+        self.assertEqual(self.user.company, payload['company'])
         self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
